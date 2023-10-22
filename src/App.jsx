@@ -60,11 +60,11 @@ function App() {
     setvalue('');
   };
   const sendText = () => {
-    setTextarea(encryptCaesar(value, 15));
+    setTextarea(encryptCaesar(value, 3));
   };
 
   const sendText2 = () => {
-    setTextarea(decryptCaesar(value, 15));
+    setTextarea(decryptCaesar(value, 3));
   };
 
   const handleFileChange = (e) => {
