@@ -1,8 +1,5 @@
 {
-    "routes": [
-      {
-        "src": "/vigener",
-        "dest": "./pages/vigener.jsx"
-      }
-    ]
-  }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}
