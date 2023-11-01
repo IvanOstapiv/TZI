@@ -38,11 +38,26 @@ header {
       right: 0px;
     }
     .container-buttons{
+      display: inline-block;
+      label{
+        font-size: 20px;
+      }
       button{
         background-color: white;
         &.active{
           background-color: blue;
         }
+      }
+    }
+    .container-key{
+      display: flex;
+      align-items: center;
+      label{
+        font-size: 15px;
+        white-space: nowrap;
+      }
+      input{
+        max-width: 100%;
       }
     }
   }
@@ -60,14 +75,16 @@ header {
         font-size: 30px;
         resize: none;
         width: 90%;
-        height: 500px;
+        height: 300px;
       }
       img{
         position: absolute;
-        // right: 10px;
+        width: 32px;
+        &:last-child {
+          top: 40px;
+        }
       }
     }
-    
   }
   
 }
