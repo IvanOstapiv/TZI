@@ -61,11 +61,11 @@ const Caesar = () => {
   }
 
   const sendText = () => {
-    setTextarea(encryptCaesar(value, 3));
+    setTextarea(encryptCaesar(value, 15));
   };
 
   const sendText2 = () => {
-    setTextarea(decryptCaesar(value, 3));
+    setTextarea(decryptCaesar(value, 15));
   };
 
   const handleFileChange = (e) => {

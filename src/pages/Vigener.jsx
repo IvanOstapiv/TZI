@@ -5,29 +5,56 @@ const Vigener = () => {
   const [value, setvalue] = useState('');
   const [keyValue, setKeyValue] = useState('');
   const [textarea, setTextarea] = useState('');
-  const [countWord, setCountWord] = useState(26);
+  const [countWord, setCountWord] = useState(27);
 
-  const countWordmas = [26, 33];
+  const [isCyrillic, setIsCyrillic] = useState(true);
+  const alphabetRegex = isCyrillic ? /[a-zA-Z]/ : /[а-яА-Я]/;
+  const defaultChar = isCyrillic ? 96 : 1071;
+  console.log(countWord, alphabetRegex, defaultChar);
+  const countWordmas = [27, 33];
 
-  const vigenereEncrypt = (text, key) => {
+  function vigenereEncrypt(text, key) {
     let result = '';
     for (let i = 0; i < text.length; i++) {
-      const charCode = text.charCodeAt(i);
-      const keyChar = key.charCodeAt(i % key.length);
-      const encryptedCharCode = charCode + keyChar;
-      result += String.fromCharCode(encryptedCharCode);
+      const char = text[i];
+      const charKey = key[i % key.length];
+      if ((char.match(alphabetRegex)) || char == ' ') {
+        if (char.charCodeAt(0) !== 32) {
+          const encryptedText = (char.charCodeAt(0) - defaultChar + (charKey.charCodeAt(0) - defaultChar)) % countWord;
+          result += String.fromCharCode(
+            encryptedText != 0 ? encryptedText + defaultChar : encryptedText + 32,
+          );
+        } else {
+          const encryptedText = (0 + charKey.charCodeAt(0) - defaultChar) % countWord;
+          result += String.fromCharCode(encryptedText + defaultChar);
+        }
+      } else {
+        result += char;
+      }
     }
     return result;
-  };
-
-  // Функція для дешифрування тексту методом Віженера
+  }
+  
+  // Функція для дешифрування тексту за допомогою шифру Віженера
   function vigenereDecrypt(text, key) {
     let result = '';
     for (let i = 0; i < text.length; i++) {
-      const charCode = text.charCodeAt(i);
-      const keyChar = key.charCodeAt(i % key.length);
-      const decryptedCharCode = charCode - keyChar;
-      result += String.fromCharCode(decryptedCharCode);
+      const char = text[i];
+      const charKey = key[i % key.length];
+      const charOffSet = char.charCodeAt(0);
+      const charKeyOffSet = charKey.charCodeAt(0);
+      console.log(charOffSet + ' - char - ' + char);
+      console.log(charKeyOffSet + ' - key - ' + charKey);
+  
+      if (char.match(alphabetRegex)) {
+        const decryptedText =
+          charOffSet >= charKeyOffSet
+            ? charOffSet - defaultChar - (charKeyOffSet - defaultChar)
+            : charOffSet - defaultChar + countWord - (charKeyOffSet - defaultChar);
+        result += String.fromCharCode(decryptedText != 0 ? decryptedText + defaultChar : decryptedText + 32);
+      } else {
+        result += charOffSet == 32 ? String.fromCharCode(countWord - (charKeyOffSet - defaultChar) + defaultChar) : char;
+      }
     }
     return result;
   }
@@ -59,18 +86,18 @@ const Vigener = () => {
   const removeTextarea = () => {
     setTextarea('');
     setvalue('');
-    setKeyValue('');
+    // setKeyValue('');
   };
 
   const clickOnArrow = () =>{
     textarea && setvalue(textarea)
   }
   const sendText = () => {
-    setTextarea(vigenereEncrypt(value, keyValue));
+    setTextarea(vigenereEncrypt(value.toLowerCase(), keyValue));
   };
 
   const sendText2 = () => {
-    setTextarea(vigenereDecrypt(value, keyValue));
+    setTextarea(vigenereDecrypt(value.toLowerCase(), keyValue));
   };
 
   const handleFileChange = (e) => {
@@ -85,6 +112,11 @@ const Vigener = () => {
     reader.readAsText(file);
   };
 
+  const setAlphabet = (item) =>{
+    setCountWord(item)
+    setIsCyrillic(item == 27 ? true : false)
+  }
+
   return (
     <>
       <label htmlFor="input-text">Введіть або загрузіть текст:</label>
@@ -96,7 +128,7 @@ const Vigener = () => {
             <button
               key={index}
               onClick={() => {
-                setCountWord(item);
+                setAlphabet(item);
               }}
               className={countWord === item ? 'active' : ''}>
               {item === 33 ? 'ua' : 'eng'}
